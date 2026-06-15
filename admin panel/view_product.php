@@ -12,7 +12,7 @@ if(isset($_COOKIE['seller_id'])){
 // Delete product
 if(isset($_POST['delete'])){
     $p_id = $_POST['product_id'];
-    $p_id = filter_var($p_id, FILTER_SANITIZE_STRING);
+    $p_id = filter_var($p_id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $delete_product = $conn->prepare('DELETE FROM `products` WHERE id = ?');
     $delete_product->execute([$p_id]); // เปลี่ยนเป็นอาร์เรย์

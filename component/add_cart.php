@@ -5,7 +5,7 @@
             $product_id = $_POST['product_id'];
 
             $qty = $_POST['qty'];
-            $qty =filter_var($qty, FILTER_SANITIZE_STRING);
+            $qty =filter_var($qty, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
             $verify_cart = $conn->prepare("SELECT *FROM cart WHERE  user_id =? AND product_id = ?");
             $verify_cart->execute([$user_id , $product_id]);

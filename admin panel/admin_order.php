@@ -10,10 +10,10 @@ if(isset($_COOKIE['seller_id'])){
 //update order from database
     if(isset($_POST['update_order'])){
         $order_id = $_POST['order_id'];
-        $order_id = filter_var($order_id, FILTER_SANITIZE_STRING);
+        $order_id = filter_var($order_id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $update_payment = $_POST['update_payment'];
-        $update_payment = filter_var($update_payment, FILTER_SANITIZE_STRING);
+        $update_payment = filter_var($update_payment, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $update_pay = $conn->prepare("UPDATE orders SET payment_status = ? WHERE id=?");
         $update_pay->execute([$update_payment, $order_id]);
@@ -22,7 +22,7 @@ if(isset($_COOKIE['seller_id'])){
     //delete order
     if(isset($_POST['delete_order'])){
         $delete_id = $_POST['order_id'];
-        $delete_id = filter_var($delete_id, FILTER_SANITIZE_STRING);
+        $delete_id = filter_var($delete_id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $verify_delete = $conn->prepare("SELECT *FROM orders WHERE id = ?");
         $verify_delete->execute([$delete_id]);
@@ -72,7 +72,7 @@ if(isset($_COOKIE['seller_id'])){
             <div class="details">
                 <p>user name : <span><?=$fetch_order['name'];?></span></p>
                 <p>user id : <span><?=$fetch_order['user_id'];?></span></p>
-                <p>placed on: <span><?=$fetch_order['dates'];?></span></p>
+                <p>placed on: <span><?=format_order_date($fetch_order['dates'] ?? null);?></span></p>
                 <p>user number : <span><?=$fetch_order['number'];?></span></p>
                 <p>user email : <span><?=$fetch_order['email'];?></span></p>
                 <p>total price : <span><?=$fetch_order['price'];?></span></p>

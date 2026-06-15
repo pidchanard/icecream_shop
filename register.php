@@ -8,7 +8,7 @@
     }
     if (isset($_POST['submit'])) {
         $id = unique_id(); // ใช้ฟังก์ชัน unique_id() ที่ประกาศใน connect.php
-        $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
+        $name = filter_var($_POST['name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
         $pass = sha1($_POST['pass']); // แปลงรหัสผ่านเป็น sha1
         $cpass = sha1($_POST['cpass']); // แปลงรหัสผ่านยืนยันเป็น sha1

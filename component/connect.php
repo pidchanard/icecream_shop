@@ -6,17 +6,24 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+$appTimezone = new DateTimeZone('Asia/Bangkok');
+date_default_timezone_set($appTimezone->getName());
+
 if (isset($_GET['reset_mock'])) {
     unset($_SESSION['mock_db']);
+    unset($_SESSION['mock_db_version']);
 }
 
 if (!class_exists('MockPDOConnection')) {
     class MockPDOConnection
     {
+        private const MOCK_DB_VERSION = '2026-06-16-order-time-display';
+
         public function __construct()
         {
-            if (!isset($_SESSION['mock_db'])) {
+            if (!isset($_SESSION['mock_db']) || $this->shouldRefreshMockData()) {
                 $_SESSION['mock_db'] = $this->seed();
+                $_SESSION['mock_db_version'] = self::MOCK_DB_VERSION;
             }
         }
 
@@ -28,6 +35,11 @@ if (!class_exists('MockPDOConnection')) {
         public function prepare($sql)
         {
             return new MockPDOStatement($this, $sql);
+        }
+
+        public function currentDateTime()
+        {
+            return (new DateTimeImmutable('now', new DateTimeZone('Asia/Bangkok')))->format('Y-m-d H:i:s');
         }
 
         public function &table($name)
@@ -158,7 +170,7 @@ if (!class_exists('MockPDOConnection')) {
                         'qty' => 1,
                         'status' => 'in progress',
                         'payment_status' => 'pending',
-                        'dates' => date('Y-m-d H:i:s', strtotime('-1 day')),
+                        'dates' => $this->currentDateTime(),
                     ],
                 ],
                 'message' => [
@@ -172,6 +184,11 @@ if (!class_exists('MockPDOConnection')) {
                     ],
                 ],
             ];
+        }
+
+        private function shouldRefreshMockData()
+        {
+            return ($_SESSION['mock_db_version'] ?? null) !== self::MOCK_DB_VERSION;
         }
     }
 
@@ -266,7 +283,7 @@ if (!class_exists('MockPDOConnection')) {
                 $row += [
                     'status' => 'in progress',
                     'payment_status' => 'pending',
-                    'dates' => date('Y-m-d H:i:s'),
+                    'dates' => $this->connection->currentDateTime(),
                 ];
             }
 
@@ -409,6 +426,24 @@ if (!function_exists('unique_id')) {
         }
 
         return $randomString;
+    }
+}
+
+if (!function_exists('format_order_date')) {
+    function format_order_date($date)
+    {
+        if (empty($date)) {
+            return 'No date';
+        }
+
+        $timezone = new DateTimeZone('Asia/Bangkok');
+        $orderDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $date, $timezone);
+
+        if (!$orderDate) {
+            $orderDate = new DateTimeImmutable($date, $timezone);
+        }
+
+        return $orderDate->setTimezone($timezone)->format('Y-m-d H:i');
     }
 }
 ?>

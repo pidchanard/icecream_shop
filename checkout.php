@@ -10,12 +10,12 @@
 
     if (isset($_POST['place_order'])) {
 
-        $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
-        $number = filter_var($_POST['number'], FILTER_SANITIZE_STRING);
+        $name = filter_var($_POST['name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $number = filter_var($_POST['number'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
-        $address = filter_var($_POST['flat'] . ',' . $_POST['street'] . ',' . $_POST['city'] . ',' . $_POST['country'] . ',' . $_POST['pin'], FILTER_SANITIZE_STRING);
-        $method = filter_var($_POST['method'], FILTER_SANITIZE_STRING);
+        $address = filter_var($_POST['flat'] . ',' . $_POST['street'] . ',' . $_POST['city'] . ',' . $_POST['country'] . ',' . $_POST['pin'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $method = filter_var($_POST['method'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $verify_cart = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ? LIMIT 1");
         $verify_cart->execute([$user_id]);

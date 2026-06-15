@@ -16,10 +16,10 @@
             $email = filter_var($email, FILTER_SANITIZE_EMAIL);
 
             $subject = $_POST['subject'];
-            $subject =filter_var($subject, FILTER_SANITIZE_STRING);
+            $subject =filter_var($subject, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
             $message = $_POST['message'];
-            $message = filter_var($email, FILTER_SANITIZE_STRING);
+            $message = filter_var($email, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
             $verify_message = $conn->prepare("SELECT * FROM message WHERE user_id = ? AND name = ? AND email=? AND subject= ? AND message = ?");
             $verify_message->execute([$user_id, $name, $email, $subject, $message]);

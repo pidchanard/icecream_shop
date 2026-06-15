@@ -12,20 +12,20 @@ if(isset($_POST['publish'])){
 
     $id = unique_id();
     $name = $_POST['name'];
-    $name = filter_var($name, FILTER_SANITIZE_STRING);
+    $name = filter_var($name, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $price = $_POST['price'];
-    $price = filter_var($price, FILTER_SANITIZE_STRING);
+    $price = filter_var($price, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $description = $_POST['description'];
-    $description = filter_var($description, FILTER_SANITIZE_STRING);
+    $description = filter_var($description, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $stock = $_POST['stock'];
-    $stock = filter_var($stock, FILTER_SANITIZE_STRING);
+    $stock = filter_var($stock, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $status = 'active';
 
     $image = $_FILES['image']['name'];
-    $image = filter_var($image, FILTER_SANITIZE_STRING);
+    $image = filter_var($image, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $image_size =$_FILES['image']['size'];
     $image_tmp_name = $_FILES['image']['tmp_name'];
     $image_folder='../uploaded_files/'.$image;
@@ -57,20 +57,20 @@ if(isset($_POST['draft'])){
 
     $id = unique_id();
     $name = $_POST['name'];
-    $name = filter_var($name, FILTER_SANITIZE_STRING);
+    $name = filter_var($name, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $price = $_POST['price'];
-    $price = filter_var($price, FILTER_SANITIZE_STRING);
+    $price = filter_var($price, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $description = $_POST['description'];
-    $description = filter_var($description, FILTER_SANITIZE_STRING);
+    $description = filter_var($description, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $stock = $_POST['stock'];
-    $stock = filter_var($stock, FILTER_SANITIZE_STRING);
+    $stock = filter_var($stock, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $status = 'deactive';
 
     $image = $_FILES['image']['name'];
-    $image = filter_var($image, FILTER_SANITIZE_STRING);
+    $image = filter_var($image, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $image_size =$_FILES['image']['size'];
     $image_tmp_name = $_FILES['image']['tmp_name'];
     $image_folder='../uploaded_files/'.$image;

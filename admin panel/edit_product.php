@@ -9,7 +9,7 @@ if (isset($_COOKIE['seller_id'])) {
 }
 
 // ตรวจสอบว่ามีค่า 'id' ใน $_GET หรือไม่
-$product_id = isset($_GET['id']) ? filter_var($_GET['id'], FILTER_SANITIZE_STRING) : '';
+$product_id = isset($_GET['id']) ? filter_var($_GET['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS) : '';
 
 $fetch_products = null; // กำหนดค่าเริ่มต้น
 
@@ -26,20 +26,20 @@ if ($product_id) {
 
 if (isset($_POST['update'])) {
     $product_id = $_POST['product_id'];
-    $product_id = filter_var($product_id, FILTER_SANITIZE_STRING);
+    $product_id = filter_var($product_id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $name = $_POST['name'];
-    $name = filter_var($name, FILTER_SANITIZE_STRING);
+    $name = filter_var($name, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $price = $_POST['price'];
-    $price = filter_var($price, FILTER_SANITIZE_STRING);
+    $price = filter_var($price, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $description = $_POST['description'];
-    $description = filter_var($description, FILTER_SANITIZE_STRING);
+    $description = filter_var($description, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $stock = $_POST['stock'];
-    $stock = filter_var($stock, FILTER_SANITIZE_STRING);
-    $status = isset($_POST['status']) ? filter_var($_POST['status'], FILTER_SANITIZE_STRING) : 'active';
+    $stock = filter_var($stock, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $status = isset($_POST['status']) ? filter_var($_POST['status'], FILTER_SANITIZE_FULL_SPECIAL_CHARS) : 'active';
 
     // แก้ไขคำสั่ง SQL UPDATE
     $update_product = $conn->prepare("UPDATE `products` SET name = ?, price = ?, product_detail = ?, stock = ?, status = ? WHERE id = ?");
@@ -49,7 +49,7 @@ if (isset($_POST['update'])) {
 
     $old_image = $_POST['old_image'];
     $image = isset($_FILES['image']['name']) ? $_FILES['image']['name'] : '';
-    $image = filter_var($image, FILTER_SANITIZE_STRING);
+    $image = filter_var($image, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $image_size = $_FILES['image']['size'];
     $image_tmp_name = $_FILES['image']['tmp_name'];
     $image_folder = '../uploaded_files/' . $image;
@@ -82,7 +82,7 @@ if (isset($_POST['update'])) {
 if (isset($_POST['delete_image'])) {
     $empty_image = '';
 
-    $product_id = filter_var($_POST['product_id'], FILTER_SANITIZE_STRING);
+    $product_id = filter_var($_POST['product_id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $delete_image = $conn->prepare("SELECT * FROM `products` WHERE id = ?");
     $delete_image->execute([$product_id]);
@@ -99,7 +99,7 @@ if (isset($_POST['delete_image'])) {
 
 // delete product
 if (isset($_POST['delete_product'])) {
-    $product_id = filter_var($_POST['product_id'], FILTER_SANITIZE_STRING);
+    $product_id = filter_var($_POST['product_id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $delete_image = $conn->prepare("SELECT * FROM `products` WHERE id = ?");
     $delete_image->execute([$product_id]);

@@ -12,7 +12,7 @@
     //remove product from wishlist
     if(isset($_POST['delete_item'])){
         $wishlist_id = $_POST['wishlist_id'];
-        $wishlist_id =filter_var($wishlist_id,FILTER_SANITIZE_STRING);
+        $wishlist_id =filter_var($wishlist_id,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $verify_delete = $conn->prepare("SELECT *FROM wishlist WHERE id = ?");
         $verify_delete->execute([$wishlist_id]);

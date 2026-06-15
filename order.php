@@ -52,7 +52,7 @@
                         if ($select_products->rowCount() > 0 ) {
                             while ($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)){
                                 // ตรวจสอบว่า 'dates' มีอยู่ในอาร์เรย์หรือไม่
-                                $order_date = isset($fetch_orders['dates']) ? $fetch_orders['dates'] : 'วันที่ไม่ระบุ';
+                                $order_date = format_order_date($fetch_orders['dates'] ?? null);
                 ?>
                 <div class="box"<?php if($fetch_orders['status'] == 'canceled') {echo ' style="border:2px solid red"';} ?>>
                     <a href="view_order.php?get_id=<?= $fetch_orders['id']; ?>">

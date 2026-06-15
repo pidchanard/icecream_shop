@@ -10,10 +10,10 @@ if(isset($_COOKIE['seller_id'])){
 //update order from database
     if(isset($_POST['update_order'])){
         $order_id = $_POST['order_id'];
-        $order_id = filter_var($order_id, FILTER_SANITIZE_STRING);
+        $order_id = filter_var($order_id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $update_payment = $_POST['update_payment'];
-        $update_payment = filter_var($update_payment, FILTER_SANITIZE_STRING);
+        $update_payment = filter_var($update_payment, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $update_pay = $conn->prepare("UPDATE orders SET payment_status = ? WHERE id=?");
         $update_pay->execute([$update_payment, $order_id]);
@@ -22,7 +22,7 @@ if(isset($_COOKIE['seller_id'])){
     //delete order
     if(isset($_POST['delete_order'])){
         $delete_id = $_POST['order_id'];
-        $delete_id = filter_var($delete_id, FILTER_SANITIZE_STRING);
+        $delete_id = filter_var($delete_id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $verify_delete = $conn->prepare("SELECT *FROM orders WHERE id = ?");
         $verify_delete->execute([$delete_id]);

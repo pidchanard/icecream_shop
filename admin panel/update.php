@@ -16,7 +16,7 @@ if(isset($_COOKIE['seller_id'])){
     $prev_image = $fetch_seller['image'];
 
     $name = $_POST['name'];
-    $name = filter_var($name , FILTER_SANITIZE_STRING);
+    $name = filter_var($name , FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $email = $_POST['email'];
     $email = filter_var($email , FILTER_SANITIZE_EMAIL);
@@ -42,7 +42,7 @@ if(isset($_COOKIE['seller_id'])){
     }
     //update image
     $image = $_FILES['image']['name'];
-    $image = filter_has_var($image, FILTER_SANITIZE_STRING);
+    $image = filter_has_var($image, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $ext = pathinfo($image, PATHINFO_EXTENSION);
     $rename = uniqid().'.'.$ext;
     $image_size = $_FILES['image']['size'];
@@ -66,13 +66,13 @@ if(isset($_COOKIE['seller_id'])){
   //update password
     $empty_pass='da39a3ee5e6b4b0d3255bfef95601890afd80709';
     $old_pass = $_POST['old pass'];
-    $old_pass = filter_var($old_pass, FILTER_SANITIZE_STRING);
+    $old_pass = filter_var($old_pass, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $new_pass = sha1($_POST['new_pass']);
-    $new_pass = filter_var($new_pass, FILTER_SANITIZE_STRING);
+    $new_pass = filter_var($new_pass, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $cpass = sha1($_POST['cpass']);
-    $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
+    $cpass = filter_var($cpass, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     if($old_pass != $empty_pass){
         if($old_pass != $prev_pass){

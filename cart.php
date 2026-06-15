@@ -12,10 +12,10 @@
     // Update quantity in cart
     if(isset($_POST['update_cart'])) {
         $cart_id = $_POST['cart_id'];
-        $cart_id = filter_var($cart_id, FILTER_SANITIZE_STRING);
+        $cart_id = filter_var($cart_id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $qty = $_POST['qty'];
-        $qty = filter_var($qty, FILTER_SANITIZE_STRING);
+        $qty = filter_var($qty, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $update_qty = $conn->prepare("UPDATE cart SET qty = ? WHERE id = ?");
         $update_qty->execute([$qty, $cart_id]);
@@ -26,7 +26,7 @@
     // Delete product from cart
     if(isset($_POST['delete_item'])) {
         $cart_id = $_POST['cart_id'];
-        $cart_id = filter_var($cart_id, FILTER_SANITIZE_STRING);
+        $cart_id = filter_var($cart_id, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $verify_delete_item = $conn->prepare("SELECT * FROM cart WHERE id = ?");
         $verify_delete_item->execute([$cart_id]);

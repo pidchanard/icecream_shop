@@ -15,7 +15,7 @@ if(isset($_POST['submit'])){
     $prev_pass = $fetch_user['password'];
     $prev_image = $fetch_user['image'];
 
-    $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
+    $name = filter_var($_POST['name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
     // Update name
@@ -41,7 +41,7 @@ if(isset($_POST['submit'])){
 
     // Update image
     $image = $_FILES['image']['name'];
-    $image = filter_var($image, FILTER_SANITIZE_STRING);
+    $image = filter_var($image, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $ext = pathinfo($image, PATHINFO_EXTENSION);
     $rename = uniqid().'.'.$ext;
     $image_size = $_FILES['image']['size'];

@@ -69,7 +69,7 @@
             ?>
             <div class="box">
                 <div class="col">
-                    <p class="title"> <i class="bx bxs-calendar-alt"></i><?= $fetch_order['dates'] ?></p>
+                    <p class="title"> <i class="bx bxs-calendar-alt"></i><?= format_order_date($fetch_order['dates'] ?? null); ?></p>
                     <img src="uploaded_files/<?= $fetch_product['image']; ?>" class="image">    
                     <p class="price"><?= $fetch_product['price']; ?>/-</p>    
                     <h3 class="name"><?= $fetch_product['name']; ?></h3> 
