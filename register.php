@@ -7,7 +7,7 @@
         $user_id = '';
     }
     if (isset($_POST['submit'])) {
-        $id = unique_id(); // ใช้ฟังก์ชัน unique_id() ที่ประกาศใน connect.php
+        $id = next_customer_id($conn); // sequential customer id: c0001, c0002, ...
         $name = filter_var($_POST['name'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
         $pass = sha1($_POST['pass']); // แปลงรหัสผ่านเป็น sha1
@@ -46,7 +46,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scoop Shop - user registeration page</title>
     <link rel="stylesheet" type="text/css"href="css/user_style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">;
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>

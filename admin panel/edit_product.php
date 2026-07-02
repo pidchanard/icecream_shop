@@ -1,12 +1,7 @@
 <?php
 include '../component/connect.php'; // นำเข้าฟังก์ชัน unique_id() และการเชื่อมต่อฐานข้อมูล
 
-if (isset($_COOKIE['seller_id'])) {
-    $seller_id = $_COOKIE['seller_id'];
-} else {
-    header('location:login.php');
-    exit(); // หยุดการทำงานหลังจากเปลี่ยนเส้นทาง
-}
+include 'admin_auth.php'; // verifies the logged-in seller and exits if not authenticated
 
 // ตรวจสอบว่ามีค่า 'id' ใน $_GET หรือไม่
 $product_id = isset($_GET['id']) ? filter_var($_GET['id'], FILTER_SANITIZE_FULL_SPECIAL_CHARS) : '';
@@ -145,9 +140,8 @@ if (isset($_POST['delete_product'])) {
                         <div class="input-field">
                             <p>Product Status<span>*</span></p>
                             <select name="status" class="box">
-                                <option value="<?= htmlspecialchars($fetch_products['status']); ?>" selected><?= htmlspecialchars($fetch_products['status']); ?></option>
-                                <option value="active">Active</option>
-                                <option value="deactive">Deactive</option>
+                                <option value="active" <?= $fetch_products['status'] == 'active' ? 'selected' : ''; ?>>Active</option>
+                                <option value="deactive" <?= $fetch_products['status'] == 'deactive' ? 'selected' : ''; ?>>Deactive</option>
                             </select>
                         </div>
                         <div class="input-field">

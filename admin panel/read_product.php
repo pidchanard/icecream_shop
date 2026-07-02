@@ -1,13 +1,7 @@
 <?php
 include '../component/connect.php'; // นำเข้าฟังก์ชัน unique_id() และการเชื่อมต่อฐานข้อมูล
 
-if (isset($_COOKIE['seller_id'])) {
-    $seller_id = $_COOKIE['seller_id'];
-} else {
-    $seller_id = '';
-    header('Location: login.php');
-    
-}
+include 'admin_auth.php'; // verifies the logged-in seller and exits if not authenticated
 
 $get_id = $_GET['post_id'];
 //delete products
@@ -64,7 +58,7 @@ $get_id = $_GET['post_id'];
                 <div class="content"><?= htmlspecialchars($fetch_products['product_detail']); ?></div>
                 <div class="flex-btn">
                     <a href="edit_product.php?id=<?=$fetch_products['id']; ?>" class="btn">edit</a>
-                    <button type="submit" name="delete" class="btn" onclick="return confirm('delete this product');">delete</button>
+                    <button type="submit" name="delete" class="btn" data-confirm="Delete this product?">delete</button>
                     <a href="view_product.php?post_id=<?=$fetch_products['id']; ?>" class="btn">go back</a>
                 </div>
         </form>

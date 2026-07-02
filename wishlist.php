@@ -63,8 +63,20 @@
                 $select_wishlist = $conn->prepare("SELECT * FROM wishlist WHERE user_id = ?");
                 $select_wishlist->execute([$user_id]);
 
-                if ($select_wishlist->rowCount() > 0) {
-                    while ($fetch_wishlist = $select_wishlist->fetch(PDO::FETCH_ASSOC)) {
+                // Pagination: 8 items per page
+                $per_page = 8;
+                $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+
+                $all_wishlist = [];
+                while ($row = $select_wishlist->fetch(PDO::FETCH_ASSOC)) { $all_wishlist[] = $row; }
+
+                $total_wishlist = count($all_wishlist);
+                $total_pages = max(1, (int) ceil($total_wishlist / $per_page));
+                $page = min($page, $total_pages);
+                $wishlist_page = array_slice($all_wishlist, ($page - 1) * $per_page, $per_page);
+
+                if ($total_wishlist > 0) {
+                    foreach ($wishlist_page as $fetch_wishlist) {
                         $select_products = $conn->prepare("SELECT * FROM products WHERE id = ?");
                         $select_products->execute([$fetch_wishlist["product_id"]]);
 
@@ -82,6 +94,7 @@
                                 <?php } else { ?>
                                     <span class="stock" style="color: red;">Hurry, only <?= $fetch_products['stock']; ?> left</span>
                                 <?php } ?>
+                                <p class="price">$<?=$fetch_products['price']; ?>/-</p>
                                 <div class="content">
                                     <img src="image/shape-19.png" class="shap">
                                     <div class="button">
@@ -93,9 +106,6 @@
                                         </div>
                                     </div>
                                     <input type="hidden" name="product_id" value="<?=$fetch_products['id']; ?>">
-                                    <div class="flex">
-                                    <p class="price">price $<?=$fetch_products['price']; ?>/-</p>
-                               </div>
                                 <div class="flex">
                                     <input type="hidden" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
                                     <a href="checkout.php?get_id=<?=$fetch_products['id']; ?>" class="btn">buy now</a>
@@ -115,6 +125,20 @@
                 }
             ?>
         </div>
+
+        <?php if ($total_pages > 1) { ?>
+        <div class="pagination">
+            <?php if ($page > 1) { ?>
+                <a href="?page=<?= $page - 1; ?>" class="btn">&laquo; Prev</a>
+            <?php } ?>
+            <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
+                <a href="?page=<?= $i; ?>" class="btn <?= $i == $page ? 'active' : ''; ?>"><?= $i; ?></a>
+            <?php } ?>
+            <?php if ($page < $total_pages) { ?>
+                <a href="?page=<?= $page + 1; ?>" class="btn">Next &raquo;</a>
+            <?php } ?>
+        </div>
+        <?php } ?>
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>

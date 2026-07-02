@@ -4,23 +4,23 @@
             <img src="image/logoice.png" width="130px">
         </a>
 
+        <?php $current_page = basename($_SERVER['PHP_SELF']); ?>
         <nav class="navbar">
-            <a href="home.php">Home</a>
-            <a href="about-us.php">About Us</a>
-            <a href="menu.php">Shop</a>
-            <a href="order.php">Order</a>
-            <a href="contact.php">Contact Us</a>
+            <a href="home.php" class="<?= $current_page == 'home.php' ? 'active' : ''; ?>">Home</a>
+            <a href="about-us.php" class="<?= $current_page == 'about-us.php' ? 'active' : ''; ?>">About Us</a>
+            <a href="menu.php" class="<?= $current_page == 'menu.php' ? 'active' : ''; ?>">Shop</a>
+            <a href="order.php" class="<?= $current_page == 'order.php' ? 'active' : ''; ?>">Order</a>
+            <a href="contact.php" class="<?= $current_page == 'contact.php' ? 'active' : ''; ?>">Contact Us</a>
         </nav>
 
         <!-- Search Form -->
         <form action="search_product.php" method="post" class="search-form">
-            <input type="text" name="search_product" placeholder="Search product..." required maxlength="100">
+            <input type="text" name="search_product" id="search-input" value="<?= isset($search_query) ? htmlspecialchars($search_query) : ''; ?>" placeholder="Search product..." maxlength="100" autocomplete="off">
             <button type="submit" class="bx bx-search-alt-2" id="search_product_btn"></button>
         </form>
 
         <!-- Icons and Wishlist/Cart Counters -->
         <div class="icons">
-            <div class="bx bx-list-plus" id="menu-btn"></div>
             <div class="bx bx-search-alt-2" id="search-btn"></div>
 
             <?php

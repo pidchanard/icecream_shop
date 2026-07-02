@@ -1,13 +1,7 @@
 <?php
 include '../component/connect.php'; // นำเข้าฟังก์ชัน unique_id() และการเชื่อมต่อฐานข้อมูล
 
-if(isset($_COOKIE['seller_id'])){
-    $seller_id = $_COOKIE['seller_id'];
-}else{
-    $seller_id = '';
-    header('location:login.php');
-    exit; // เพิ่ม exit เพื่อหยุดการทำงานหากไม่ได้ล็อกอิน
-}
+include 'admin_auth.php'; // verifies the logged-in seller and exits if not authenticated
 
 // Delete product
 if(isset($_POST['delete'])){
@@ -29,30 +23,57 @@ if(isset($_POST['delete'])){
     <title>Scoop Shop - Show products Page</title>
     <link rel="stylesheet" type="text/css" href="../css/admin_style.css">
     <!-- Font -->
-    <link src="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body>
 <div class="main-container">
     <?php include '../component/admin_header.php'; ?>
+    <?php
+        // Optional status filter coming from the dashboard (active / deactive)
+        $status_filter = $_GET['status'] ?? '';
+        if ($status_filter == 'active' || $status_filter == 'deactive') {
+            $select_products = $conn->prepare("SELECT * FROM products WHERE seller_id = ? AND status = ?");
+            $select_products->execute([$seller_id, $status_filter]);
+            $products_heading = ucfirst($status_filter) . ' Products';
+        } else {
+            $select_products = $conn->prepare("SELECT * FROM products WHERE seller_id = ?");
+            $select_products->execute([$seller_id]);
+            $products_heading = 'Your Products';
+        }
+
+        // Pagination: 6 products per page
+        $per_page = 6;
+        $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+
+        $all_products = [];
+        while ($row = $select_products->fetch(PDO::FETCH_ASSOC)) {
+            $all_products[] = $row;
+        }
+
+        $total_products = count($all_products);
+        $total_pages = max(1, (int) ceil($total_products / $per_page));
+        $page = min($page, $total_pages);
+        $products_page = array_slice($all_products, ($page - 1) * $per_page, $per_page);
+
+        // Keep the status filter in pagination links
+        $status_qs = $status_filter !== '' ? 'status=' . urlencode($status_filter) . '&' : '';
+    ?>
     <section class="show-post">
         <div class="heading">
-            <h1>Your Products</h1>
+            <h1><?= $products_heading; ?></h1>
             <img src="../image/separator-img.png">
         </div>
         <div class="box-container">
-            <?php 
-                $select_products = $conn->prepare("SELECT * FROM products WHERE seller_id = ?");
-                $select_products->execute([$seller_id]);
-                
-                if($select_products->rowCount() > 0){
-                    while($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)){
+            <?php
+                if($total_products > 0){
+                    foreach($products_page as $fetch_products){
             ?>
             <form action="" method="post" class="box">
                 <input type="hidden" name="product_id" value="<?= $fetch_products['id'];?>">
                 <?php if($fetch_products['image'] != ''){ ?>
-                    <img src="../uploaded_files/<?=$fetch_products['image']; ?>">
-                <?php } ?>    
+                    <img src="../uploaded_files/<?=$fetch_products['image']; ?>" class="image">
+                <?php } ?>
                 <div class="status" style="color: <?= $fetch_products['status'] == 'active' ? 'limegreen' : 'coral'; ?>">
                     <?=$fetch_products['status']; ?>
                 </div>
@@ -62,13 +83,13 @@ if(isset($_POST['delete'])){
                     <div class="title"><?=$fetch_products['name']; ?></div>
                     <div class="flex-btn">
                         <a href="edit_product.php?id=<?=$fetch_products['id']; ?>" class="btn"><span class="textedit">Edit</span></a>
-                        <button type="submit" name="delete" class="btn" onclick="return confirm('Delete this product?');">Delete</button>
+                        <button type="submit" name="delete" class="btn" data-confirm="Delete this product?">Delete</button>
                         <a href="read_product.php?post_id=<?=$fetch_products['id']; ?>" class="btn">Read </a>
                     </div>
                 </div>
             </form>
             <?php
-                    }    
+                    }
                 }else{
                     echo '<div class="empty">
                             <p>No products added yet! <br><a href="add_products.php" class="btn" style="margin-top: 1.5rem;">Add Products</a></p>
@@ -76,6 +97,20 @@ if(isset($_POST['delete'])){
                 }
             ?>
         </div>
+
+        <?php if ($total_pages > 1) { ?>
+        <div class="pagination">
+            <?php if ($page > 1) { ?>
+                <a href="?<?= $status_qs; ?>page=<?= $page - 1; ?>" class="btn">&laquo; Prev</a>
+            <?php } ?>
+            <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
+                <a href="?<?= $status_qs; ?>page=<?= $i; ?>" class="btn <?= $i == $page ? 'active' : ''; ?>"><?= $i; ?></a>
+            <?php } ?>
+            <?php if ($page < $total_pages) { ?>
+                <a href="?<?= $status_qs; ?>page=<?= $page + 1; ?>" class="btn">Next &raquo;</a>
+            <?php } ?>
+        </div>
+        <?php } ?>
     </section>
 </div>
 

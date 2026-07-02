@@ -1,5 +1,6 @@
 <?php
 include '../component/connect.php'; // นำเข้าฟังก์ชัน unique_id() และการเชื่อมต่อฐานข้อมูล
+include 'admin_auth.php'; // only an already logged-in seller may register new sellers
 
 if (isset($_POST['submit'])) {
     $id = unique_id(); // ใช้ฟังก์ชัน unique_id() ที่ประกาศใน connect.php

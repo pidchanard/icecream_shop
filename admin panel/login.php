@@ -13,8 +13,13 @@ if (isset($_POST['submit'])) {
     $row =$select_seller->fetch(PDO::FETCH_ASSOC);
 
     if ($select_seller->rowCount() > 0) {
-        setcookie('seller_id',$row['id'], time()+ 60*60*24*30,'/');
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        session_regenerate_id(true); // prevent session fixation on login
+        $_SESSION['seller_id'] = $row['id']; // identity kept server-side, not in a client cookie
         header('location:dashboard.php');
+        exit;
     }else{
         $warning_msg[]='incorrect email or password';
 }
@@ -46,7 +51,6 @@ if (isset($_POST['submit'])) {
                         <input type="password" name="pass" placeholder="Enter your password" maxlength="50" required class="box">
                     </div>
         
-            <p class="link">Do not have an account? <a href="register.php">register now</a></p>
             <input type="submit" name="submit" value="login Now" class="btn">
         </form>
     </div>

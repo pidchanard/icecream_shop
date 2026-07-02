@@ -6,9 +6,7 @@
     }else{
         $user_id = '';
     }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scoop Shop - home page</title>
     <link rel="stylesheet" type="text/css"href="css/user_style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">;
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
@@ -45,9 +43,10 @@
             </div>
         </div>
         <ul class="controls">
-            <li onclick="nextSlide()"class="next"> <i class="bx bx-right-arrow-alt"></i></li>
-            <li onclick="prevSlide()"class="prev"> <i class="bx bx-left-arrow-alt"></i></li>
+            <li onclick="prevSlide()" class="prev"> <i class="bx bx-left-arrow-alt"></i></li>
+            <li onclick="nextSlide()" class="next"> <i class="bx bx-right-arrow-alt"></i></li>
         </ul>
+        <div class="slider-dots"></div>
     </div>
     <!-- slider section end -->
      <div class="service">
@@ -189,6 +188,13 @@
                         <h1>blueberry</h1>
                     </div>
                 </div>
+                <div class="box">
+                    <img src="image/categories.jpg">
+                    <div class="detail">
+                        <h2>natural sweetness</h2>
+                        <h1>coconut</h1>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="ice-container">
@@ -291,28 +297,28 @@
             <div class="box">
                 <img src="image/icon.avif">
                 <div class="detail">
-                    <h3>scoop ice-cream</h3>
-                    <p>Scooping ice cream requires a quick dip of the scoop in warm water to prevent sticking, 
-                    followed by a gentle press into the ice cream. With a smooth, rotating motion of the wrist, 
-                    you form a neat ball that easily releases into a bowl or cone for a perfect, creamy scoop.</p>
+                    <h3>Classic Sundae</h3>
+                    <p>A generous scoop crowned with rich chocolate sauce, crunchy nuts, and a swirl of
+                    whipped cream. The timeless treat that never goes out of style — sweet, creamy, and
+                    finished with a bright cherry on top.</p>
                 </div>
             </div>
             <div class="box">
                 <img src="image/icon0.avif">
                 <div class="detail">
-                    <h3>scoop ice-cream</h3>
-                    <p>Scooping ice cream requires a quick dip of the scoop in warm water to prevent sticking, 
-                    followed by a gentle press into the ice cream. With a smooth, rotating motion of the wrist, 
-                    you form a neat ball that easily releases into a bowl or cone for a perfect, creamy scoop.</p>
+                    <h3>Waffle Cone</h3>
+                    <p>Creamy scoops stacked on a crisp, freshly baked waffle cone. Perfectly portable
+                    and irresistibly crunchy, it's the fun, hand-held way to enjoy your favourite
+                    flavour anywhere you go.</p>
                 </div>
             </div>
             <div class="box">
                 <img src="image/icon1.avif">
                 <div class="detail">
-                    <h3>scoop ice-cream</h3>
-                    <p>Scooping ice cream requires a quick dip of the scoop in warm water to prevent sticking, 
-                    followed by a gentle press into the ice cream. With a smooth, rotating motion of the wrist, 
-                    you form a neat ball that easily releases into a bowl or cone for a perfect, creamy scoop.</p>
+                    <h3>Fruit Sorbet</h3>
+                    <p>A light, dairy-free delight bursting with real fruit. Refreshingly tangy and
+                    naturally sweet, it cleanses the palate and cools you down — the perfect guilt-free
+                    treat on a hot day.</p>
                 </div>
             </div>
         </div>
@@ -325,28 +331,28 @@
             <div class="box">
                 <img src="image/icon2.avif">
                 <div class="detail">
-                    <h3>scoop ice-cream</h3>
-                    <p>Scooping ice cream requires a quick dip of the scoop in warm water to prevent sticking, 
-                    followed by a gentle press into the ice cream. With a smooth, rotating motion of the wrist, 
-                    you form a neat ball that easily releases into a bowl or cone for a perfect, creamy scoop.</p>
+                    <h3>Strawberry Parfait</h3>
+                    <p>Layers of velvety strawberry ice cream, fresh berries, and crunchy granola served
+                    tall in a glass. A fruity, elegant dessert that looks as good as it tastes — pure
+                    berry indulgence.</p>
                 </div>
             </div>
             <div class="box">
                 <img src="image/icon3.avif">
                 <div class="detail">
-                    <h3>scoop ice-cream</h3>
-                    <p>Scooping ice cream requires a quick dip of the scoop in warm water to prevent sticking, 
-                    followed by a gentle press into the ice cream. With a smooth, rotating motion of the wrist, 
-                    you form a neat ball that easily releases into a bowl or cone for a perfect, creamy scoop.</p>
+                    <h3>Ice Cream Bar</h3>
+                    <p>Smooth ice cream dipped in a snappy chocolate shell on a stick. Mess-free, frosty,
+                    and packed with flavour in every bite — the classic frozen bar you'll reach for
+                    again and again.</p>
                 </div>
             </div>
             <div class="box">
                 <img src="image/icon4.avif">
                 <div class="detail">
-                    <h3>scoop ice-cream</h3>
-                    <p>Scooping ice cream requires a quick dip of the scoop in warm water to prevent sticking, 
-                    followed by a gentle press into the ice cream. With a smooth, rotating motion of the wrist, 
-                    you form a neat ball that easily releases into a bowl or cone for a perfect, creamy scoop.</p>
+                    <h3>Italian Gelato</h3>
+                    <p>Slow-churned the Italian way for an ultra-silky, dense texture and intense flavour.
+                    Less air and more richness means every spoonful is smoother and more indulgent than
+                    ordinary ice cream.</p>
                 </div>
             </div>
         </div>

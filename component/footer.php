@@ -26,7 +26,6 @@
     <div class="content">
         <div class="box">
             <img src="image/logoice.png">
-            <p>------------------------Nuts------------------</p>
             <a href="contact.php"class="btn">contact now</a>
         </div>
         <div class="box">
@@ -52,9 +51,9 @@
         </div>
         <div class="box">
             <h3>contact us</h3>
-            <p><i class="bx bxs-phone"></i>095-111-1112</p>
-            <p><i class="bx bxs-envelope"></i>gddddd@gmail.com</a>
-            <p><i class="bx bxs-location-plus"></i>Chonburi , Thailand</p>
+            <p><i class="bx bxs-phone"></i>065-717-4712</p>
+            <p><i class="bx bxs-envelope"></i>pidchanard.m@gmail.com</a>
+            <p><i class="bx bxs-location-plus"></i>Bangkok 10250 , Thailand</p>
             <div class="icons">
                 <i class="bx bxl-facebook"></i>
                 <i class="bx bxl-twitter"></i>
@@ -64,7 +63,6 @@
         </div>
     </div>
     <div class="bottom">
-        <p>Copyright nubnibbb.</p>
-        <a href="admin panel/login.php"> become a seller</a>
+        <p>Copyright &copy; 2026 Scoop. All Rights Reserved</p>
     </div>
 </footer>

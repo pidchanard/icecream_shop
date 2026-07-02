@@ -17,7 +17,7 @@ if (isset($_GET['reset_mock'])) {
 if (!class_exists('MockPDOConnection')) {
     class MockPDOConnection
     {
-        private const MOCK_DB_VERSION = '2026-06-16-order-time-display';
+        private const MOCK_DB_VERSION = '2026-06-30-customer-id-c0001';
 
         public function __construct()
         {
@@ -59,7 +59,7 @@ if (!class_exists('MockPDOConnection')) {
             return [
                 'users' => [
                     [
-                        'id' => 'user-demo-001',
+                        'id' => 'c0001',
                         'name' => 'Demo Customer',
                         'email' => 'customer@example.com',
                         'password' => $userPassword,
@@ -140,7 +140,7 @@ if (!class_exists('MockPDOConnection')) {
                 'cart' => [
                     [
                         'id' => 'cart-demo-001',
-                        'user_id' => 'user-demo-001',
+                        'user_id' => 'c0001',
                         'product_id' => 'prod-001',
                         'price' => 79,
                         'qty' => 2,
@@ -149,7 +149,7 @@ if (!class_exists('MockPDOConnection')) {
                 'wishlist' => [
                     [
                         'id' => 'wish-demo-001',
-                        'user_id' => 'user-demo-001',
+                        'user_id' => 'c0001',
                         'product_id' => 'prod-002',
                         'price' => 89,
                     ],
@@ -157,7 +157,7 @@ if (!class_exists('MockPDOConnection')) {
                 'orders' => [
                     [
                         'id' => 'order-demo-001',
-                        'user_id' => 'user-demo-001',
+                        'user_id' => 'c0001',
                         'seller_id' => 'seller-demo-001',
                         'name' => 'Demo Customer',
                         'number' => '0812345678',
@@ -176,7 +176,7 @@ if (!class_exists('MockPDOConnection')) {
                 'message' => [
                     [
                         'id' => 'msg-demo-001',
-                        'user_id' => 'user-demo-001',
+                        'user_id' => 'c0001',
                         'name' => 'Demo Customer',
                         'email' => 'customer@example.com',
                         'subject' => 'Mock message',
@@ -426,6 +426,25 @@ if (!function_exists('unique_id')) {
         }
 
         return $randomString;
+    }
+}
+
+if (!function_exists('next_customer_id')) {
+    // Generates the next sequential customer id: c0001, c0002, c0003, ...
+    // Looks at existing users and continues from the highest cNNNN value.
+    function next_customer_id($conn)
+    {
+        $select_users = $conn->prepare("SELECT id FROM users");
+        $select_users->execute([]);
+
+        $max = 0;
+        while ($row = $select_users->fetch(PDO::FETCH_ASSOC)) {
+            if (preg_match('/^c(\d+)$/i', $row['id'] ?? '', $match)) {
+                $max = max($max, (int) $match[1]);
+            }
+        }
+
+        return 'c' . str_pad($max + 1, 4, '0', STR_PAD_LEFT);
     }
 }
 

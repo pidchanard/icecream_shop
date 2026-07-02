@@ -4,9 +4,7 @@
         <img src="../image/logoice.png" width="150">
     </div>
     <div class="right">
-        <div class="fa-solid fa-user" id="user-btn"></div> 
-        <div class="toggle-btn"><i class="bx bx-menu"></i></div>
-
+        <div class="fa-solid fa-user" id="user-btn"></div>
     </div>
     <div class="profile-detail">
         <?php
@@ -21,7 +19,7 @@
             <p><?= $fetch_profile['name']; ?></p>
             <div class="flex-btn">
                 <a href="profile.php" class="btn">profile</a>
-                <a href="../component/admin_logout.php" onclick="return confirm('logout from this website?');" class="btn">logout</a>
+                <a href="../component/admin_logout.php" data-confirm="Logout from this website?" class="btn">logout</a>
             </div>
         </div>
         <?php } ?>
@@ -49,7 +47,7 @@
                 <li> <a href="add_products.php"><i class="fa-solid fa-bag-shopping"></i>add products</a></li>
                 <li> <a href="view_product.php"><i class="fa-solid fa-folder-minus"></i>view product</a></li>
                 <li> <a href="user_accounts.php"><i class="fa-regular fa-id-card"></i>accounts</a></li>
-                <li> <a href="../component/admin_logout.php" onclick="return confirm('logout from this website ')"><i class="fa-solid fa-right-from-bracket"></i>logout</a></li>
+                <li> <a href="../component/admin_logout.php" data-confirm="Logout from this website?"><i class="fa-solid fa-right-from-bracket"></i>logout</a></li>
             </ul>
         </div>
         <h5>find us</h5>

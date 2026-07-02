@@ -1,12 +1,7 @@
 <?php
 include '../component/connect.php'; // นำเข้าฟังก์ชัน unique_id() และการเชื่อมต่อฐานข้อมูล
 
-if(isset($_COOKIE['seller_id'])){
-    $seller_id = $_COOKIE['seller_id'];
-}else{
-    $seller_id = '';
-    header('location:login.php');
-}
+include 'admin_auth.php'; // verifies the logged-in seller and exits if not authenticated
 //update order from database
     if(isset($_POST['update_order'])){
         $order_id = $_POST['order_id'];
@@ -46,7 +41,7 @@ if(isset($_COOKIE['seller_id'])){
     <title>Scoop Shop - Registered sellers Page</title>
     <link rel="stylesheet" type="text/css" href="../css/admin_style.css">
     <!-- Font -->
-    <link src="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     
 </head>
@@ -63,10 +58,22 @@ if(isset($_COOKIE['seller_id'])){
                  $select_sellers =$conn->prepare("SELECT * FROM sellers ");
                  $select_sellers->execute();
 
-                 if($select_sellers->rowCount() > 0){
-                    while($fetch_sellers =$select_sellers->fetch(PDO::FETCH_ASSOC)){
+                 // Pagination: 8 sellers per page
+                 $per_page = 8;
+                 $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+
+                 $all_sellers = [];
+                 while ($row = $select_sellers->fetch(PDO::FETCH_ASSOC)) { $all_sellers[] = $row; }
+
+                 $total_sellers = count($all_sellers);
+                 $total_pages = max(1, (int) ceil($total_sellers / $per_page));
+                 $page = min($page, $total_pages);
+                 $sellers_page = array_slice($all_sellers, ($page - 1) * $per_page, $per_page);
+
+                 if($total_sellers > 0){
+                    foreach($sellers_page as $fetch_sellers){
                         $user_id = $fetch_sellers['id'];
-           
+
                 ?>
                 <div class="box">
                     <img src="../uploaded_files/<?= $fetch_sellers['image']; ?>"
@@ -83,6 +90,20 @@ if(isset($_COOKIE['seller_id'])){
                 }
                 ?>
         </div>
+
+        <?php if ($total_pages > 1) { ?>
+        <div class="pagination">
+            <?php if ($page > 1) { ?>
+                <a href="?page=<?= $page - 1; ?>" class="btn">&laquo; Prev</a>
+            <?php } ?>
+            <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
+                <a href="?page=<?= $i; ?>" class="btn <?= $i == $page ? 'active' : ''; ?>"><?= $i; ?></a>
+            <?php } ?>
+            <?php if ($page < $total_pages) { ?>
+                <a href="?page=<?= $page + 1; ?>" class="btn">Next &raquo;</a>
+            <?php } ?>
+        </div>
+        <?php } ?>
         </section>
     </div>
    

@@ -13,15 +13,17 @@
             $max_cart_items = $conn->prepare("SELECT *FROM cart WHERE user_id =? ");
             $max_cart_items->execute([$user_id ]) ;
 
+            $select_price = $conn->prepare("SELECT *FROM products WHERE id = ? LIMIT 1");
+            $select_price->execute([$product_id]);
+            $fetch_price =$select_price->fetch(PDO::FETCH_ASSOC);
+
             if($verify_cart->rowCount() > 0){
                 $warning_msg[] = 'product already exist in your cart';
         }else if($max_cart_items->rowCount() > 20){
                 $warning_msg[] = 'your cart is full';
+        }else if(!$fetch_price || $fetch_price['stock'] == 0){
+                $warning_msg[] = 'product is out of stock';
         }else{
-                $select_price = $conn->prepare("SELECT *FROM products WHERE id = ? LIMIT 1");
-                $select_price->execute([$product_id]);
-                $fetch_price =$select_price->fetch(PDO::FETCH_ASSOC);
-
                 $insert_cart =$conn->prepare("INSERT INTO cart (id, user_id, product_id, price, qty)
                 VALUES(?, ?, ?, ?, ?)");
 

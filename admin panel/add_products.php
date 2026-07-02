@@ -1,12 +1,7 @@
 <?php
 include '../component/connect.php'; // นำเข้าฟังก์ชัน unique_id() และการเชื่อมต่อฐานข้อมูล
 
-if(isset($_COOKIE['seller_id'])){
-    $seller_id = $_COOKIE['seller_id'];
-}else{
-    $seller_id = '';
-    header('location:login.php');
-}
+include 'admin_auth.php'; // verifies the logged-in seller and exits if not authenticated
 //add product in database
 if(isset($_POST['publish'])){
 
@@ -108,7 +103,7 @@ if(isset($_POST['draft'])){
     <title>Scoop Shop - Seller Add Products Page</title>
     <link rel="stylesheet" type="text/css" href="../css/admin_style.css">
     <!-- Font -->
-    <link src="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     
 </head>

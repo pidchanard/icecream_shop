@@ -17,7 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scoop Shop - our shop page</title>
     <link rel="stylesheet" type="text/css"href="css/user_style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">;
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
@@ -43,8 +43,20 @@
                 $select_products =$conn->prepare("SELECT *FROM products WHERE status = ? ");
                 $select_products->execute(['active']);
 
-                if($select_products->rowCount() > 0) {
-                    while($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)) {
+                // Pagination: 8 products per page
+                $per_page = 8;
+                $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+
+                $all_products = [];
+                while ($row = $select_products->fetch(PDO::FETCH_ASSOC)) { $all_products[] = $row; }
+
+                $total_products = count($all_products);
+                $total_pages = max(1, (int) ceil($total_products / $per_page));
+                $page = min($page, $total_pages);
+                $products_page = array_slice($all_products, ($page - 1) * $per_page, $per_page);
+
+                if($total_products > 0) {
+                    foreach($products_page as $fetch_products) {
 
             ?>
             <form action="" method="post" class="box <?php if($fetch_products['stock'] ==0 ){echo "
@@ -59,6 +71,7 @@
                     <span class="stock" style="color: red;">Hurry, only <?= $fetch_products['stock']
                     ;?></span>
                 <?php } ?>
+                <p class="price">$<?= $fetch_products['price'];?>/-</p>
                 <div class="content">
                     <img src="image/shape-19.png" alt="" class="shap">
                     <div class="button">
@@ -69,7 +82,6 @@
                             <a href="view_page.php?pid=<?= $fetch_products['id']?>" class="bx bxs-show"></a>
                         </div>
                     </div>
-                    <p class="price">price $<?= $fetch_products['price'];?></p>
                     <input type="hidden" name="product_id" value="<?=$fetch_products['id']?>">
                     <div class="flex-btn">
                         <a href="checkout.php?get_id=<?=$fetch_products['id']?>" class="btn">buy now</a>
@@ -88,6 +100,20 @@
                     }
             ?>
         </div>
+
+        <?php if ($total_pages > 1) { ?>
+        <div class="pagination">
+            <?php if ($page > 1) { ?>
+                <a href="?page=<?= $page - 1; ?>" class="btn">&laquo; Prev</a>
+            <?php } ?>
+            <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
+                <a href="?page=<?= $i; ?>" class="btn <?= $i == $page ? 'active' : ''; ?>"><?= $i; ?></a>
+            <?php } ?>
+            <?php if ($page < $total_pages) { ?>
+                <a href="?page=<?= $page + 1; ?>" class="btn">Next &raquo;</a>
+            <?php } ?>
+        </div>
+        <?php } ?>
     </div>
     
     

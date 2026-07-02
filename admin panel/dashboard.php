@@ -1,12 +1,7 @@
 <?php
 include '../component/connect.php'; // นำเข้าฟังก์ชัน unique_id() และการเชื่อมต่อฐานข้อมูล
 
-if(isset($_COOKIE['seller_id'])){
-    $seller_id = $_COOKIE['seller_id'];
-}else{
-    $seller_id = '';
-    header('location:login.php');
-}
+include 'admin_auth.php'; // verifies the logged-in seller and exits if not authenticated
 ?>
 
 <!DOCTYPE html>
@@ -63,7 +58,7 @@ if(isset($_COOKIE['seller_id'])){
                     ?>
                     <h3><?= $number_of_active_products;?></h3>
                     <p>total active products</p>
-                    <a href="view_product.php" class="btn">active products</a>
+                    <a href="view_product.php?status=active" class="btn">active products</a>
                 </div>
                 <div class="box">
                 <?php
@@ -73,7 +68,7 @@ if(isset($_COOKIE['seller_id'])){
                     ?>
                     <h3><?= $number_of_deactive_products;?></h3>
                     <p>total deactive products</p>
-                    <a href="view_product.php" class="btn">deactive products</a>
+                    <a href="view_product.php?status=deactive" class="btn">deactive products</a>
                 </div>
                 <div class="box">
                 <?php
@@ -113,17 +108,17 @@ if(isset($_COOKIE['seller_id'])){
                     ?>
                     <h3><?= $number_of_confirm_orders;?></h3>
                     <p>total confirm orders placed</p>
-                    <a href="admin_order.php" class="btn">Confirm Orders</a>
+                    <a href="admin_order.php?filter=confirm" class="btn">Confirm Orders</a>
                 </div>
                 <div class="box">
                 <?php
                     $select_cenceled_orders = $conn->prepare("SELECT * FROM orders WHERE seller_id =? AND status =?");
-                    $select_cenceled_orders->execute([$seller_id,'cenceled']);
+                    $select_cenceled_orders->execute([$seller_id,'canceled']);
                     $number_of_cenceled_orders =$select_cenceled_orders->rowCount();
                     ?>
                     <h3><?= $number_of_cenceled_orders;?></h3>
-                    <p>total cenceled orders placed</p>
-                    <a href="admin_order.php" class="btn">cenceled Orders</a>
+                    <p>total canceled orders placed</p>
+                    <a href="admin_order.php?filter=canceled" class="btn">Canceled Orders</a>
                 </div>
         </div>
         </section>
