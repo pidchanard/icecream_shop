@@ -124,7 +124,7 @@
                         <i class='bx <?= $st_icon; ?>'></i> <?= $st_text; ?>
                     </p>
                     <?php if ($all_canceled || $all_delivered) { ?>
-                        <a href="<?= count($items) > 1 ? 'menu.php' : 'checkout.php?get_id=' . urlencode($first['product_id']); ?>" class="btn" style="line-height: 3;">
+                        <a href="<?= count($items) > 1 ? 'menu.php' : 'checkout.php?get_id=' . urlencode($first['product_id']) . '&qty=' . urlencode($first['qty']); ?>" class="btn" style="line-height: 3;">
                             Order Again
                         </a>
                     <?php } else { ?>

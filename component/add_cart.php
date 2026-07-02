@@ -6,6 +6,7 @@
 
             $qty = $_POST['qty'];
             $qty =filter_var($qty, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $qty = (int)$qty;
 
             $verify_cart = $conn->prepare("SELECT *FROM cart WHERE  user_id =? AND product_id = ?");
             $verify_cart->execute([$user_id , $product_id]);
@@ -23,6 +24,10 @@
                 $warning_msg[] = 'your cart is full';
         }else if(!$fetch_price || $fetch_price['stock'] == 0){
                 $warning_msg[] = 'product is out of stock';
+        }else if($qty < 1){
+                $warning_msg[] = 'quantity must be at least 1';
+        }else if($qty > $fetch_price['stock']){
+                $warning_msg[] = 'only ' . $fetch_price['stock'] . ' left in stock';
         }else{
                 $insert_cart =$conn->prepare("INSERT INTO cart (id, user_id, product_id, price, qty)
                 VALUES(?, ?, ?, ?, ?)");

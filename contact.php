@@ -19,7 +19,7 @@
             $subject =filter_var($subject, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
             $message = $_POST['message'];
-            $message = filter_var($email, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $message = filter_var($message, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
             $verify_message = $conn->prepare("SELECT * FROM message WHERE user_id = ? AND name = ? AND email=? AND subject= ? AND message = ?");
             $verify_message->execute([$user_id, $name, $email, $subject, $message]);
@@ -30,7 +30,7 @@
                 $insert_message = $conn->prepare("INSERT INTO message(id ,user_id, name, email, subject, message) VALUES (?, ?, ?, ?, ?, ?)");
                 $insert_message->execute([$id, $user_id, $name, $email, $subject, $message]);
 
-                $warning_msg[] = 'comment inserted successfully';
+                $success_msg[] = 'comment inserted successfully';
             }
         }else{
             $warning_msg[]= 'please login first';

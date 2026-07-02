@@ -31,11 +31,25 @@
                         $warning_msg[] = 'This product is out of stock';
                         break;
                     }
+
+                    // จำนวนที่สั่ง (จาก Buy Now) จำกัดไม่ให้เกินสต็อก
+                    $qty = isset($_GET['qty']) ? (int)$_GET['qty'] : 1;
+                    if ($qty < 1) { $qty = 1; }
+                    if ($qty > $fetch_product['stock']) {
+                        $warning_msg[] = 'Only ' . $fetch_product['stock'] . ' left in stock';
+                        break;
+                    }
+
                     $seller_id = $fetch_product['seller_id'];
 
                     $insert_order = $conn->prepare("INSERT INTO `orders` (id, order_group, user_id, seller_id, name, number, email, address, address_type, method, product_id, price, qty)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    $insert_order->execute([uniqid(), $order_group, $user_id, $seller_id, $name, $number, $email, $address, $_POST['address_type'], $method, $fetch_product['id'], $fetch_product['price'], 1]);
+                    $insert_order->execute([uniqid(), $order_group, $user_id, $seller_id, $name, $number, $email, $address, $_POST['address_type'], $method, $fetch_product['id'], $fetch_product['price'], $qty]);
+
+                    // ตัดสต็อกตามจำนวนที่สั่ง (คำนวณใน PHP เพราะ mock db ไม่รองรับนิพจน์ SQL)
+                    $new_stock = max(0, (int)$fetch_product['stock'] - $qty);
+                    $reduce_stock = $conn->prepare("UPDATE `products` SET stock = ? WHERE id = ?");
+                    $reduce_stock->execute([$new_stock, $fetch_product['id']]);
 
                     header('location:order.php');
                     exit();
@@ -56,9 +70,17 @@
 
                 $seller_id = $f_products['seller_id'];
 
+                // สั่งได้ไม่เกินสต็อกที่เหลือจริง
+                $order_qty = min((int)$f_cart['qty'], (int)$f_products['stock']);
+
                 $insert_order = $conn->prepare("INSERT INTO `orders` (id, order_group, user_id, seller_id, name, number, email, address, address_type, method, product_id, price, qty)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $insert_order->execute([uniqid(), $order_group, $user_id, $seller_id, $name, $number, $email, $address, $_POST['address_type'], $method, $f_cart['product_id'], $f_products['price'], $f_cart['qty']]);
+                $insert_order->execute([uniqid(), $order_group, $user_id, $seller_id, $name, $number, $email, $address, $_POST['address_type'], $method, $f_cart['product_id'], $f_products['price'], $order_qty]);
+
+                // ตัดสต็อกตามจำนวนที่สั่ง (คำนวณใน PHP เพราะ mock db ไม่รองรับนิพจน์ SQL)
+                $new_stock = max(0, (int)$f_products['stock'] - $order_qty);
+                $reduce_stock = $conn->prepare("UPDATE `products` SET stock = ? WHERE id = ?");
+                $reduce_stock->execute([$new_stock, $f_cart['product_id']]);
             }
 
             $delete_cart = $conn->prepare("DELETE FROM `cart` WHERE user_id = ?");
@@ -270,15 +292,19 @@
                             $select_get = $conn->prepare("SELECT * FROM `products` WHERE id = ?");
                             $select_get->execute([$_GET['get_id']]);
 
+                            // จำนวนที่เลือกจาก Buy Now (จำกัดไม่ให้เกินสต็อก)
+                            $get_qty = isset($_GET['qty']) ? (int)$_GET['qty'] : 1;
+                            if ($get_qty < 1) { $get_qty = 1; }
                             while ($fetch_get = $select_get->fetch(PDO::FETCH_ASSOC)) {
-                                $sub_total = $fetch_get['price'];
+                                if ($get_qty > $fetch_get['stock']) { $get_qty = $fetch_get['stock']; }
+                                $sub_total = $fetch_get['price'] * $get_qty;
                                 $grand_total += $sub_total;
                     ?>
                     <div class="flex">
                         <img src="uploaded_files/<?= $fetch_get['image']; ?>" class="image">
                         <div>
                             <h3 class="name"><?= $fetch_get['name']; ?></h3>
-                            <p class="price">$<?= $fetch_get['price']; ?></p>
+                            <p class="price">$<?= $fetch_get['price']; ?> <span>x<?= $get_qty; ?></span></p>
                         </div>
                     </div>
                     <?php 

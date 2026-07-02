@@ -74,9 +74,13 @@ if(isset($_POST['delete'])){
                 <?php if($fetch_products['image'] != ''){ ?>
                     <img src="../uploaded_files/<?=$fetch_products['image']; ?>" class="image">
                 <?php } ?>
-                <div class="status" style="color: <?= $fetch_products['status'] == 'active' ? 'limegreen' : 'coral'; ?>">
-                    <?=$fetch_products['status']; ?>
-                </div>
+                <?php if ($fetch_products['stock'] == 0) { ?>
+                    <div class="status" style="color: red;">out of stock</div>
+                <?php } else { ?>
+                    <div class="status" style="color: <?= $fetch_products['status'] == 'active' ? 'limegreen' : 'coral'; ?>">
+                        <?=$fetch_products['status']; ?>
+                    </div>
+                <?php } ?>
                 <div class="price">$<?= $fetch_products['price']; ?>/-</div>
                 <div class="content">
                     <img src="../image/shape-19.png" class="shap">

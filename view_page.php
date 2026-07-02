@@ -67,9 +67,13 @@
             <input type="hidden" name="product_id" value="<?=$fetch_products['id']; ?>">
             <div class="button">
                 <button type="submit" name="add_to_wishlist" class="btn">add to wishlist<i class="bx bx-heart"></i></button>
-                <input type="hidden" name="qty" value="1" min="0" class="quantity">
-                <button type="submit" name="add_to_cart" class="btn">add to cart<i class="bx bx-cart"></i></button>
-            </div>                
+                <?php if ($fetch_products['stock'] == 0) { ?>
+                    <button type="button" class="btn" disabled style="opacity:.5; cursor:not-allowed;">out of stock</button>
+                <?php } else { ?>
+                    <input type="number" name="qty" value="1" min="1" max="<?=$fetch_products['stock']; ?>" class="quantity">
+                    <button type="submit" name="add_to_cart" class="btn">add to cart<i class="bx bx-cart"></i></button>
+                <?php } ?>
+            </div>
             </div>  
         </form>
         <?php

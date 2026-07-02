@@ -37,8 +37,8 @@ if ($select_products->rowCount() > 0) {
                 </div>
                 <input type="hidden" name="product_id" value="<?= $fetch_products['id'] ?>">
                 <div class="flex-btn">
-                    <a href="checkout.php?get_id=<?= $fetch_products['id'] ?>" class="btn">Buy Now</a>
-                    <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
+                    <a href="checkout.php?get_id=<?= $fetch_products['id'] ?>" class="btn" onclick="this.href='checkout.php?get_id=<?= $fetch_products['id'] ?>&qty='+this.parentNode.querySelector('.qty').value">Buy Now</a>
+                    <input type="number" name="qty" required min="1" value="1" max="<?= $fetch_products['stock']; ?>" class="qty">
                 </div>
             </div>
         </form>

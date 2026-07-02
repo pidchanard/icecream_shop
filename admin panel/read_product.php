@@ -49,7 +49,11 @@ $get_id = $_GET['post_id'];
         ?>
         <form action="" method="post" class="box">
             <input type="hidden" name="product_id" value="<?= htmlspecialchars($fetch_products['id']); ?>">
-            <div class="status" style="color: <?= ($fetch_products['status'] == 'active') ? 'limegreen' : 'coral'; ?>"><?= htmlspecialchars($fetch_products['status']); ?></div>
+            <?php if ($fetch_products['stock'] == 0) { ?>
+                <div class="status" style="color: red;">out of stock</div>
+            <?php } else { ?>
+                <div class="status" style="color: <?= ($fetch_products['status'] == 'active') ? 'limegreen' : 'coral'; ?>"><?= htmlspecialchars($fetch_products['status']); ?></div>
+            <?php } ?>
             <?php if ($fetch_products['image'] != '') { ?>
                 <img src="../uploaded_files/<?= htmlspecialchars($fetch_products['image']); ?>" alt="Product Image" class="image">
             <?php } ?>

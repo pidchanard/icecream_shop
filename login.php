@@ -18,7 +18,7 @@
 
     if ($select_user ->rowCount() > 0) {
         setcookie('user_id',$row['id'], time()+ 60*60*24*30,'/');
-        header('location:home.php');
+        header('location:home.php?login=success');
     }else{
         $warning_msg[]='incorrect email or password';
 }

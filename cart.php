@@ -16,11 +16,31 @@
 
         $qty = $_POST['qty'];
         $qty = filter_var($qty, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $qty = (int)$qty;
 
-        $update_qty = $conn->prepare("UPDATE cart SET qty = ? WHERE id = ?");
-        $update_qty->execute([$qty, $cart_id]);
+        // หาสต็อกจริงของสินค้าในรายการตะกร้านี้ (แยกสองคำสั่งเพราะ mock db ไม่รองรับ subquery)
+        $get_cart_row = $conn->prepare("SELECT * FROM cart WHERE id = ? LIMIT 1");
+        $get_cart_row->execute([$cart_id]);
+        $cart_row = $get_cart_row->fetch(PDO::FETCH_ASSOC);
 
-        $success_msg[] = 'Cart quantity updated successfully';
+        $stock = 0;
+        if($cart_row) {
+            $select_stock = $conn->prepare("SELECT * FROM products WHERE id = ? LIMIT 1");
+            $select_stock->execute([$cart_row['product_id']]);
+            $fetch_stock = $select_stock->fetch(PDO::FETCH_ASSOC);
+            $stock = $fetch_stock ? (int)$fetch_stock['stock'] : 0;
+        }
+
+        if($qty < 1) {
+            $warning_msg[] = 'Quantity must be at least 1';
+        } else if($qty > $stock) {
+            $warning_msg[] = 'Only ' . $stock . ' left in stock';
+        } else {
+            $update_qty = $conn->prepare("UPDATE cart SET qty = ? WHERE id = ?");
+            $update_qty->execute([$qty, $cart_id]);
+
+            $success_msg[] = 'Cart quantity updated successfully';
+        }
     }
 
     // Delete product from cart
@@ -124,7 +144,7 @@
                                     
                                     <div class="flex-btn">
                                         <p class="price">Price: $<?= $fetch_products['price']; ?>/-</p>
-                                        <input type="number" name="qty" required min="1" value="<?= $fetch_cart['qty']; ?>" max="99" maxlength="2" class="box qty">
+                                        <input type="number" name="qty" required min="1" value="<?= $fetch_cart['qty']; ?>" max="<?= $fetch_products['stock']; ?>" class="box qty">
                                         <button type="submit" name="update_cart" class="bx bxs-edit fa-edit box"></button>
                                     </div>
 

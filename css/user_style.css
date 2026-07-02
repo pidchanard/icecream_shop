@@ -1240,6 +1240,28 @@ footer .bottom a{
     text-transform: capitalize;
     font-size: 2rem;
 }
+.view_page .box .detail .button{
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+.view_page .box .detail .button .btn{
+    margin: 0;
+}
+.view_page .box .detail .button .quantity{
+    width: 6rem;
+    height: 3.4rem;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--main-color);
+    background-color: var(--white-alpha-25);
+    border: 2px solid var(--main-color);
+    border-radius: 1.5rem;
+    -moz-appearance: textfield;
+}
 .services{
     background-image: url('../image/bn3.3.webp');
     background-attachment: fixed;

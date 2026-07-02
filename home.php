@@ -6,6 +6,14 @@
     }else{
         $user_id = '';
     }
+
+    // แจ้งเตือนหลัง login / logout
+    if(isset($_GET['login']) && $_GET['login'] === 'success') {
+        $success_msg[] = 'logged in successfully';
+    }
+    if(isset($_GET['logout']) && $_GET['logout'] === 'success') {
+        $success_msg[] = 'logged out successfully';
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
