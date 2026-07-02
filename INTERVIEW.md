@@ -118,6 +118,44 @@
 
 ---
 
+## ⬜ หมวด 8: Authentication & Access Control (ถามบ่อย)
+
+**Q: มีระบบ authentication ไหม?**
+> มีครบครับ — สมัคร, ล็อกอิน (แยกลูกค้า/แอดมิน), ล็อกเอาต์ และ guard ควบคุมสิทธิ์
+> 👉 `login.php`, `register.php`, `admin panel/login.php`, `component/user_auth.php`, `component/admin_auth.php` (อยู่ใน admin panel)
+
+**Q: ใช้อะไรแยก admin กับ customer?**
+> แยกด้วยโครงสร้าง — คนละตาราง (`users` / `sellers`), คนละที่เก็บตัวตน (cookie / session), คนละ guard ที่ตรวจกับตารางของตัวเอง เลยข้ามสิทธิ์กันไม่ได้
+
+**Q: ทำไมไม่ใช้ role column?**
+> เพราะเป็นคนละ entity ชัดเจน แต่ถ้าผู้ใช้ประเภทเดียวมีหลายระดับสิทธิ์ ผมจะใช้ role column หรือ RBAC (Role-Based Access Control) แทน
+
+**Q: ระบบใช้ cookie ไหม?**
+> ใช้ครับ ฝั่งลูกค้าเก็บ `user_id` ใน cookie (30 วัน) ตอน login, logout ก็เคลียร์ด้วยการตั้ง expiry เป็นอดีต — ส่วนแอดมินใช้ session (ปลอดภัยกว่า)
+> 👉 `login.php`, `component/user_logout.php`
+
+**Q: cookie แบบนี้ปลอดภัยไหม?**
+> ยังไม่พอครับ ผมเช็คซ้ำกับ DB แล้ว แต่ถ้าพัฒนาต่อจะย้ายฝั่งลูกค้าเป็น session, ใช้ token ที่เซ็นชื่อ, และเพิ่ม flag `HttpOnly`/`Secure` กัน XSS
+
+**Q: จัดโครงสร้าง auth ยังไง?**
+> ทำเป็น guard รวมศูนย์ไฟล์เดียวต่อฝั่ง ทุกหน้าแค่ `include` ต้นไฟล์ — ตามหลัก DRY ไม่เขียนเช็คสิทธิ์ซ้ำทุกหน้า
+
+---
+
+## ⬜ หมวด 9: Real-time / Frontend
+
+**Q: ทำให้สถานะอัปเดตแบบ real-time ยังไง?**
+> ใช้ AJAX polling — ฝั่ง user ยิงขอสถานะทุก 4 วินาทีแล้วอัปเดต DOM เอง ไม่ต้องรีเฟรช
+> 👉 `order_status.php` (endpoint JSON) + JS ใน `order.php`
+
+**Q: มีวิธีที่ดีกว่า polling ไหม?**
+> มีครับ — WebSocket หรือ Server-Sent Events (SSE) ให้ server push มาแทนการ poll จะลด request และเร็วกว่า
+
+**Q: ทำไม PHP?**
+> เข้าใจ request–response ชัด, เริ่มเร็วไม่ต้อง config, เหมาะกับงานเว็บ/e-commerce, หา hosting ง่าย — เข้าใจ core ก่อนแล้วต่อยอด framework ได้
+
+---
+
 ## ✅ กฎการตอบ 3 ข้อ
 1. ตอบ **"ทำไม" ควบคู่ "อะไร"** เสมอ
 2. **จุดอ่อนพูดเองก่อน** แล้วบอกวิธีแก้ (โดยเฉพาะ security)
