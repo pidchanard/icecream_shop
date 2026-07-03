@@ -56,7 +56,7 @@
                 <h3 style="margin-bottom: 1rem;"><?= $fetch_profile['name']; ?></h3>
                 <div class="flex-btn">
                     <a href="profile.php" class="btn">View Profile</a>
-                    <a href="component/user_logout.php" onclick="return confirm('Logout from this website?');" class="btn">Logout</a>
+                    <a href="component/user_logout.php" data-confirm="Logout from this website?" class="btn">Logout</a>
                 </div>
             <?php } else { ?>
                 <h3 style="margin-bottom: 1rem;">Please login or register</h3>
