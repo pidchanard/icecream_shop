@@ -10,6 +10,8 @@ $appTimezone = new DateTimeZone('Asia/Bangkok');
 date_default_timezone_set($appTimezone->getName());
 
 if (isset($_GET['reset_mock'])) {
+    // Shared file store is reset by deleting the data file (re-seeded on next load)
+    @unlink(dirname(__DIR__) . '/data/mock_db.json');
     unset($_SESSION['mock_db']);
     unset($_SESSION['mock_db_version']);
 }
@@ -19,11 +21,49 @@ if (!class_exists('MockPDOConnection')) {
     {
         private const MOCK_DB_VERSION = '2026-06-30-customer-id-c0001';
 
+        // Data is kept in a single shared file so admin changes (add/edit/delete
+        // products, stock, orders) are visible to every visitor, not just the
+        // session that made them.
+        private $data = [];
+        private $storageFile;
+
         public function __construct()
         {
-            if (!isset($_SESSION['mock_db']) || $this->shouldRefreshMockData()) {
-                $_SESSION['mock_db'] = $this->seed();
-                $_SESSION['mock_db_version'] = self::MOCK_DB_VERSION;
+            $this->storageFile = dirname(__DIR__) . '/data/mock_db.json';
+            $this->load();
+        }
+
+        private function load()
+        {
+            $dir = dirname($this->storageFile);
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0777, true);
+            }
+
+            if (is_file($this->storageFile)) {
+                $decoded = json_decode((string) file_get_contents($this->storageFile), true);
+                if (is_array($decoded)
+                    && ($decoded['version'] ?? null) === self::MOCK_DB_VERSION
+                    && isset($decoded['tables']) && is_array($decoded['tables'])) {
+                    $this->data = $decoded['tables'];
+                    return;
+                }
+            }
+
+            // Missing / outdated file: seed fresh and persist for everyone.
+            $this->data = $this->seed();
+            $this->save();
+        }
+
+        public function save()
+        {
+            $payload = json_encode(
+                ['version' => self::MOCK_DB_VERSION, 'tables' => $this->data],
+                JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+            );
+
+            if ($payload !== false) {
+                file_put_contents($this->storageFile, $payload, LOCK_EX);
             }
         }
 
@@ -44,11 +84,11 @@ if (!class_exists('MockPDOConnection')) {
 
         public function &table($name)
         {
-            if (!isset($_SESSION['mock_db'][$name])) {
-                $_SESSION['mock_db'][$name] = [];
+            if (!isset($this->data[$name])) {
+                $this->data[$name] = [];
             }
 
-            return $_SESSION['mock_db'][$name];
+            return $this->data[$name];
         }
 
         private function seed()
@@ -186,10 +226,6 @@ if (!class_exists('MockPDOConnection')) {
             ];
         }
 
-        private function shouldRefreshMockData()
-        {
-            return ($_SESSION['mock_db_version'] ?? null) !== self::MOCK_DB_VERSION;
-        }
     }
 
     class MockPDOStatement
@@ -220,16 +256,19 @@ if (!class_exists('MockPDOConnection')) {
             if (stripos($this->sql, 'insert') === 0) {
                 $this->insertRow($params);
                 $this->affectedRows = 1;
+                $this->connection->save();
                 return true;
             }
 
             if (stripos($this->sql, 'update') === 0) {
                 $this->affectedRows = $this->updateRows($params);
+                $this->connection->save();
                 return true;
             }
 
             if (stripos($this->sql, 'delete') === 0) {
                 $this->affectedRows = $this->deleteRows($params);
+                $this->connection->save();
                 return true;
             }
 
@@ -318,6 +357,7 @@ if (!class_exists('MockPDOConnection')) {
                 }
                 $updated++;
             }
+            unset($row); // avoid a dangling reference to the last matched row
 
             return $updated;
         }
